@@ -26,12 +26,31 @@ func NotionRoute(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(res)
 }
 
+func HabitsRoute(w http.ResponseWriter, r *http.Request){
+	res := notionapi.GetHabits()
+	json.NewEncoder(w).Encode(res)
+}
+
+func PagesRoute(w http.ResponseWriter, r *http.Request){
+	res := notionapi.GetPages()
+	json.NewEncoder(w).Encode(res)
+}
+
+func SumRoute(w http.ResponseWriter, r *http.Request){
+	res := notionapi.HabitsPercentage()
+	json.NewEncoder(w).Encode(res)
+}
+
+
+
 
 func main(){
 
 	loadEnvFile()
-
 	r := mux.NewRouter()
-	r.HandleFunc("/notion", NotionRoute)
+	r.HandleFunc("/database", NotionRoute)
+	r.HandleFunc("/habits", HabitsRoute)
+	r.HandleFunc("/habits/sum", SumRoute)
+	r.HandleFunc("/pages", PagesRoute)
 	log.Fatal(http.ListenAndServe(":3000", r))
 }
