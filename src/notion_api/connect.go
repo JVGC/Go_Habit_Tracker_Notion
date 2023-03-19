@@ -12,7 +12,8 @@ import (
 
 func GetDatabaseSettings() database_models.NotionDatabase {
 
-	req, err := http.NewRequest("GET", "https://api.notion.com/v1/databases/"+os.Getenv("DATABASE_ID"),nil)
+	req, err := http.NewRequest("GET", "https://api.notion.com/v1/databases/"+
+															os.Getenv("DATABASE_ID"),nil)
 
 	req.Header.Set("Authorization", "Bearer "+os.Getenv("SECRET_TOKEN"))
 	req.Header.Set("Notion-Version", "2022-06-28")
@@ -28,8 +29,20 @@ func GetDatabaseSettings() database_models.NotionDatabase {
     if err != nil {
         log.Fatal(err)
 		}
+		// fmt.Println(string(responseData))
 
 		var data database_models.NotionDatabase
 		json.Unmarshal(responseData, &data)
 		return data
+}
+
+func GetHabits() []string {
+	database := GetDatabaseSettings()
+	habits := make([]string, 0, len(database.Properties))
+	for k := range database.Properties {
+		if database.Properties[k].Type == "checkbox"{
+			habits = append(habits, k)
+		}
+	}
+	return habits
 }
