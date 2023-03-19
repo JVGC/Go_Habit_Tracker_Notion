@@ -1,4 +1,4 @@
-package notionapi_models
+package notionapi
 
 import (
 	"encoding/json"
@@ -15,13 +15,13 @@ func GetDatabaseSettings() database_models.NotionDatabase {
 	req, err := http.NewRequest("GET", "https://api.notion.com/v1/databases/"+
 															os.Getenv("DATABASE_ID"),nil)
 
+	if err != nil {
+	fmt.Print(err.Error())
+	os.Exit(1)
+	}
 	req.Header.Set("Authorization", "Bearer "+os.Getenv("SECRET_TOKEN"))
 	req.Header.Set("Notion-Version", "2022-06-28")
 
-	if err != nil {
-		fmt.Print(err.Error())
-		os.Exit(1)
-	}
 
 	response, _ := http.DefaultClient.Do(req)
 
