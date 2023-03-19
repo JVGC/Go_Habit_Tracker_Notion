@@ -7,5 +7,7 @@ type Page struct {
 }
 
 type PagesQuery struct{
+	Has_More bool
+	Next_Cursor string
 	Pages []Page `json:"results"`
 }
