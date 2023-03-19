@@ -1,9 +1,11 @@
 package models
 
+
 type Property struct {
 	Id string
-	Name string
+	Name string `json:",omitempty"`
 	Type string
+	Checkbox bool
 }
 type ExternalObj struct {
 	Url string
