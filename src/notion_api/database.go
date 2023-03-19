@@ -13,7 +13,7 @@ import (
 func GetDatabaseSettings() database_models.NotionDatabase {
 
 	req, err := http.NewRequest("GET", "https://api.notion.com/v1/databases/"+
-															os.Getenv("DATABASE_ID"),nil)
+															os.Getenv("DATABASE_ID"), nil)
 
 	if err != nil {
 	fmt.Print(err.Error())

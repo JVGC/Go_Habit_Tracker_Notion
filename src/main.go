@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	notionapi "go_notion_api/src/notion_api"
+	usecases "go_notion_api/src/use_cases"
 
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
@@ -32,16 +33,15 @@ func HabitsRoute(w http.ResponseWriter, r *http.Request){
 }
 
 func PagesRoute(w http.ResponseWriter, r *http.Request){
-	res := notionapi.GetPages()
+	res := notionapi.GetPages("")
 	json.NewEncoder(w).Encode(res)
 }
 
 func SumRoute(w http.ResponseWriter, r *http.Request){
-	res := notionapi.HabitsPercentage()
+	date := r.URL.Query().Get("date")
+	res := usecases.HabitsPercentage(date)
 	json.NewEncoder(w).Encode(res)
 }
-
-
 
 
 func main(){
