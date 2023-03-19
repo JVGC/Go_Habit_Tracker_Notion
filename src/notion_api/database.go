@@ -3,7 +3,7 @@ package notionapi
 import (
 	"encoding/json"
 	"fmt"
-	database_models "go_notion_api/src/notion_api/database"
+	database_models "go_notion_api/src/notion_api/models"
 	"io"
 	"log"
 	"net/http"
