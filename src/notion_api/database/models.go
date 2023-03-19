@@ -2,16 +2,9 @@ package models
 
 type Property struct {
 	Id string
+	Name string
 	Type string
 }
-
-type Properties struct {
-	ReviewAnki Property `json:"Revisar Anki"`
-	Meditation Property `json:"Meditação"`
-	Reading Property `json:"Leitura"`
-	Date Property
-}
-
 type ExternalObj struct {
 	Url string
 }
@@ -19,5 +12,5 @@ type ExternalObj struct {
 type NotionDatabase struct{
 	Object string
 	Description []string
-	Properties Properties
+	Properties map[string]Property `json:"properties"`
 }
