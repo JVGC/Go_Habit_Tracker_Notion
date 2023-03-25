@@ -19,7 +19,7 @@ func GetCurrentStreak(habit string) int {
 	next_cursor := ""
 
 	current_streak := 0
-	should_continue := true
+	var should_continue bool
 
 	for has_more{
 		pagesQuery := notionapi.GetPages(models.Filter{

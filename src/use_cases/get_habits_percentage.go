@@ -5,13 +5,18 @@ import (
 	"go_notion_api/src/notion_api/models"
 )
 
-func HabitsPercentage(startDate string) map[string]float64{
+func GetHabitsPercentage(startDate string) map[string]float64{
 	var has_more bool = true
 	next_cursor := ""
 
 	pages := []models.Page{}
 	for has_more{
-		pagesResponse := notionapi.GetPages(models.Filter{Created_time: models.DateFilter{On_or_after: startDate}}, next_cursor)
+		pagesResponse := notionapi.GetPages(
+			models.Filter{
+				Created_time: models.DateFilter{On_or_after: startDate},
+			},
+			next_cursor,
+		)
 		pages = append(pages, pagesResponse.Pages...)
 		has_more = pagesResponse.Has_More
 		next_cursor = pagesResponse.Next_Cursor

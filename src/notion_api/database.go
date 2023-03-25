@@ -29,8 +29,6 @@ func GetDatabaseSettings() database_models.NotionDatabase {
     if err != nil {
         log.Fatal(err)
 		}
-		// fmt.Println(string(responseData))
-
 		var data database_models.NotionDatabase
 		json.Unmarshal(responseData, &data)
 		return data

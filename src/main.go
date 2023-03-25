@@ -41,7 +41,7 @@ func PagesRoute(w http.ResponseWriter, r *http.Request){
 
 func SumRoute(w http.ResponseWriter, r *http.Request){
 	startAt := r.URL.Query().Get("startAt")
-	res := usecases.HabitsPercentage(startAt)
+	res := usecases.GetHabitsPercentage(startAt)
 
 	returnObj := make(map[string]string)
 

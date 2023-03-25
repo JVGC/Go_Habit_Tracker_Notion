@@ -7,10 +7,6 @@ type Property struct {
 	Type string
 	Checkbox bool
 }
-type ExternalObj struct {
-	Url string
-}
-
 type NotionDatabase struct{
 	Object string
 	Description []string

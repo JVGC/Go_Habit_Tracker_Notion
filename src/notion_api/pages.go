@@ -19,14 +19,14 @@ func setRequestHeader(req *http.Request){
 	req.Header.Add("content-type", "application/json")
 }
 
-func getPagesStruct(responseBody io.ReadCloser) pages_models.PagesQuery{
+func getPagesStruct(responseBody io.ReadCloser) pages_models.GetPagesResponse{
 	responseData, err := io.ReadAll(responseBody)
 	if err != nil{
 		fmt.Print(err.Error())
 		os.Exit(1)
 	}
 
-	var data pages_models.PagesQuery
+	var data pages_models.GetPagesResponse
 	json.Unmarshal(responseData, &data)
 	return data
 }
@@ -56,9 +56,9 @@ func doPagesRequest(jsonString string) *http.Response{
 	return response
 }
 
-func GetPages(f models.Filter, start_cursor string, s  ...models.Sort) models.PagesQuery{
+func GetPages(f models.Filter, start_cursor string, s  ...models.Sort) models.GetPagesResponse{
 
-  requestQuery := models.PagesRequestQuery{
+  requestQuery := models.GetPagesRequest{
 		Page_Size: 10,
 	}
 	dateFilter := models.DateFilter{
@@ -90,7 +90,7 @@ func GetPages(f models.Filter, start_cursor string, s  ...models.Sort) models.Pa
 	pagesQuery := getPagesStruct(response.Body)
 	data = append(data, pagesQuery.Pages...)
 
-	return models.PagesQuery{
+	return models.GetPagesResponse{
 		Pages: data,
 		Next_Cursor: pagesQuery.Next_Cursor,
 		Has_More: pagesQuery.Has_More,
