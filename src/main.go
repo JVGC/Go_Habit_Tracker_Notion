@@ -35,7 +35,7 @@ func HabitsRoute(w http.ResponseWriter, r *http.Request){
 }
 
 func PagesRoute(w http.ResponseWriter, r *http.Request){
-	res := notionapi.GetPages(models.Filter{Created_time: models.DateFilter{On_or_after: ""}})
+	res := notionapi.GetPages(models.Filter{Created_time: models.DateFilter{On_or_after: ""}}, "")
 	json.NewEncoder(w).Encode(res)
 }
 
@@ -51,6 +51,13 @@ func SumRoute(w http.ResponseWriter, r *http.Request){
 	json.NewEncoder(w).Encode(returnObj)
 }
 
+func CurrentStreakRoute(w http.ResponseWriter, r *http.Request){
+	habit := mux.Vars(r)["habit"]
+	res := usecases.GetCurrentStreak(habit)
+
+	json.NewEncoder(w).Encode(res)
+}
+
 
 func main(){
 
@@ -60,5 +67,6 @@ func main(){
 	r.HandleFunc("/habits", HabitsRoute)
 	r.HandleFunc("/habits/sum", SumRoute)
 	r.HandleFunc("/pages", PagesRoute)
+	r.HandleFunc("/habits/streak/current/{habit}", CurrentStreakRoute)
 	log.Fatal(http.ListenAndServe(":3000", r))
 }
