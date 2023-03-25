@@ -56,38 +56,44 @@ func doPagesRequest(jsonString string) *http.Response{
 	return response
 }
 
-func GetPages(f models.Filter) []pages_models.Page{
-
-	var has_more bool = true
+func GetPages(f models.Filter, start_cursor string, s  ...models.Sort) models.PagesQuery{
 
   requestQuery := models.PagesRequestQuery{
 		Page_Size: 10,
 	}
+	dateFilter := models.DateFilter{
+		On_or_after: f.Created_time.On_or_after,
+		Before: f.Created_time.Before,
+	}
+	filter := models.Filter{
+		Timestamp: "created_time",
+		Created_time: dateFilter,
+	}
 
 	if(f.Created_time.On_or_after != ""){
-		dateFilter := models.DateFilter{
-			On_or_after: f.Created_time.On_or_after,
-		}
-		filter := models.Filter{
-			Timestamp: "created_time",
-			Created_time: dateFilter,
-		}
 		requestQuery.Filter = &filter
+	}
+	if(f.Created_time.Before != ""){
+		requestQuery.Filter = &filter
+	}
+	if(len(s) > 0){
+		requestQuery.Sorts = s
+	}
+	if start_cursor != ""{
+		requestQuery.Start_cursor = start_cursor
 	}
 	data := []pages_models.Page{}
 
-	for has_more{
+	jsonFilter, _ := json.Marshal(requestQuery)
+	response := doPagesRequest(string(jsonFilter))
 
-		jsonFilter, _ := json.Marshal(requestQuery)
-		response := doPagesRequest(string(jsonFilter))
+	pagesQuery := getPagesStruct(response.Body)
+	data = append(data, pagesQuery.Pages...)
 
-		pagesQuery := getPagesStruct(response.Body)
-		has_more = pagesQuery.Has_More
-		fmt.Print(has_more, pagesQuery.Next_Cursor)
-		requestQuery.Start_cursor = pagesQuery.Next_Cursor
-		data = append(data, pagesQuery.Pages...)
+	return models.PagesQuery{
+		Pages: data,
+		Next_Cursor: pagesQuery.Next_Cursor,
+		Has_More: pagesQuery.Has_More,
 	}
-
-	return data
 
 }
