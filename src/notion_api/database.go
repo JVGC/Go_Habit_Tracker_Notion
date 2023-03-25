@@ -2,28 +2,19 @@ package notionapi
 
 import (
 	"encoding/json"
-	"fmt"
 	database_models "go_notion_api/src/notion_api/models"
+	"go_notion_api/src/services"
 	"io"
 	"log"
-	"net/http"
 	"os"
 )
 
 func GetDatabaseSettings() database_models.NotionDatabase {
 
-	req, err := http.NewRequest("GET", "https://api.notion.com/v1/databases/"+
-															os.Getenv("DATABASE_ID"), nil)
+	notionClient := services.NotionClient{}
+	notionClient.Init()
 
-	if err != nil {
-	fmt.Print(err.Error())
-	os.Exit(1)
-	}
-	req.Header.Set("Authorization", "Bearer "+os.Getenv("SECRET_TOKEN"))
-	req.Header.Set("Notion-Version", "2022-06-28")
-
-
-	response, _ := http.DefaultClient.Do(req)
+	response := notionClient.Get("/databases/"+ os.Getenv("DATABASE_ID"))
 
 	responseData, err := io.ReadAll(response.Body)
     if err != nil {

@@ -5,28 +5,20 @@ import (
 	"encoding/json"
 	"fmt"
 	"go_notion_api/src/notion_api/models"
-	pages_models "go_notion_api/src/notion_api/models"
+	"go_notion_api/src/services"
 	"io"
 	"net/http"
 	"os"
 )
 
-
-func setRequestHeader(req *http.Request){
-	req.Header.Set("Authorization", "Bearer "+os.Getenv("SECRET_TOKEN"))
-	req.Header.Set("Notion-Version", "2022-06-28")
-	req.Header.Add("accept", "application/json")
-	req.Header.Add("content-type", "application/json")
-}
-
-func getPagesStruct(responseBody io.ReadCloser) pages_models.GetPagesResponse{
+func getPagesStruct(responseBody io.ReadCloser) models.GetPagesResponse{
 	responseData, err := io.ReadAll(responseBody)
 	if err != nil{
 		fmt.Print(err.Error())
 		os.Exit(1)
 	}
 
-	var data pages_models.GetPagesResponse
+	var data models.GetPagesResponse
 	json.Unmarshal(responseData, &data)
 	return data
 }
@@ -37,22 +29,11 @@ func doPagesRequest(jsonString string) *http.Response{
 	jsonBody := []byte(jsonString)
 	bodyReader := bytes.NewReader(jsonBody)
 
-	req, err := http.NewRequest("POST", "https://api.notion.com/v1/databases/"+
-															os.Getenv("DATABASE_ID")+"/query", bodyReader)
+	notionClient := services.NotionClient{}
+	notionClient.Init()
 
-	if err != nil{
-		fmt.Print(err.Error())
-		os.Exit(1)
-	}
+	response := notionClient.Post("/databases/"+os.Getenv("DATABASE_ID")+"/query", bodyReader)
 
-	setRequestHeader(req)
-
-	response, err := http.DefaultClient.Do(req)
-
-	if err != nil{
-		fmt.Print(err.Error())
-		os.Exit(1)
-	}
 	return response
 }
 
@@ -82,7 +63,7 @@ func GetPages(f models.Filter, start_cursor string, s  ...models.Sort) models.Ge
 	if start_cursor != ""{
 		requestQuery.Start_cursor = start_cursor
 	}
-	data := []pages_models.Page{}
+	data := []models.Page{}
 
 	jsonFilter, _ := json.Marshal(requestQuery)
 	response := doPagesRequest(string(jsonFilter))
