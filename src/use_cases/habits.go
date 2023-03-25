@@ -2,11 +2,12 @@ package usecases
 
 import (
 	notionapi "go_notion_api/src/notion_api"
+	"go_notion_api/src/notion_api/models"
 )
 
-func HabitsPercentage(date string ) map[string]float64{
+func HabitsPercentage(startDate string) map[string]float64{
 	habits := notionapi.GetHabits()
-	pages := notionapi.GetPages(date)
+	pages := notionapi.GetPages(models.Filter{Created_time: models.DateFilter{On_or_after: startDate}})
 
 	sumObj := make(map[string]float64)
 
@@ -19,7 +20,8 @@ func HabitsPercentage(date string ) map[string]float64{
 				sumObj[habit] +=1
 			}
 		}
-		sumObj[habit] = (sumObj[habit] / counter)*100
+		sumObj[habit] = (sumObj[habit] / counter)
+
 	}
 
 	return sumObj

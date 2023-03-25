@@ -15,16 +15,16 @@ type PagesQuery struct{
 
 
 type DateFilter struct{
-	On_or_after string `json:"on_or_after"`
+	On_or_after string `json:"on_or_after,omitempty"`
 }
 
 type Filter struct {
-	Timestamp string `json:"timestamp"`
-	Created_time DateFilter `json:"created_time"`
+	Timestamp string `json:"timestamp,omitempty"`
+	Created_time DateFilter `json:"created_time,omitempty"`
 }
 
 type PagesRequestQuery struct{
-	Filter Filter `json:"filter,omitempty"`
+	Filter *Filter `json:"filter,omitempty"`
 	Start_cursor string `json:"start_cursor,omitempty"`
 	Page_Size int `json:"page_size,omitempty"`
 }

@@ -33,6 +33,7 @@ func getPagesStruct(responseBody io.ReadCloser) pages_models.PagesQuery{
 
 func doPagesRequest(jsonString string) *http.Response{
 
+	fmt.Print(jsonString)
 	jsonBody := []byte(jsonString)
 	bodyReader := bytes.NewReader(jsonBody)
 
@@ -55,30 +56,35 @@ func doPagesRequest(jsonString string) *http.Response{
 	return response
 }
 
-func GetPages(dateFilter string) []pages_models.Page{
+func GetPages(f models.Filter) []pages_models.Page{
 
 	var has_more bool = true
 
- filter := &models.PagesRequestQuery{
-		Filter: struct{Timestamp string `json:"timestamp"`; Created_time models.DateFilter `json:"created_time"`}{
-			Timestamp: "created_time",
-			Created_time: struct{On_or_after string `json:"on_or_after"`}{
-				On_or_after: dateFilter,
-			},
-		},
+  requestQuery := models.PagesRequestQuery{
 		Page_Size: 10,
 	}
 
+	if(f.Created_time.On_or_after != ""){
+		dateFilter := models.DateFilter{
+			On_or_after: f.Created_time.On_or_after,
+		}
+		filter := models.Filter{
+			Timestamp: "created_time",
+			Created_time: dateFilter,
+		}
+		requestQuery.Filter = &filter
+	}
 	data := []pages_models.Page{}
 
 	for has_more{
 
-		jsonFilter, _ := json.Marshal(filter)
+		jsonFilter, _ := json.Marshal(requestQuery)
 		response := doPagesRequest(string(jsonFilter))
 
 		pagesQuery := getPagesStruct(response.Body)
 		has_more = pagesQuery.Has_More
-		filter.Start_cursor = pagesQuery.Next_Cursor
+		fmt.Print(has_more, pagesQuery.Next_Cursor)
+		requestQuery.Start_cursor = pagesQuery.Next_Cursor
 		data = append(data, pagesQuery.Pages...)
 	}
 
