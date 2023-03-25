@@ -14,8 +14,14 @@ type PagesQuery struct{
 
 
 
+type Sort struct{
+	Property string `json:"property,omitempty"`
+	Direction string `json:"direction,omitempty"`
+}
+
 type DateFilter struct{
 	On_or_after string `json:"on_or_after,omitempty"`
+	Before string `json:"before,omitempty"`
 }
 
 type Filter struct {
@@ -27,4 +33,5 @@ type PagesRequestQuery struct{
 	Filter *Filter `json:"filter,omitempty"`
 	Start_cursor string `json:"start_cursor,omitempty"`
 	Page_Size int `json:"page_size,omitempty"`
+	Sorts []Sort `json:"sorts,omitempty"`
 }
