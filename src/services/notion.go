@@ -7,8 +7,6 @@ import (
 	"os"
 )
 
-
-
 type NotionClient struct{
 	baseUrl string
 }

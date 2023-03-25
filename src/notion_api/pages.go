@@ -40,7 +40,7 @@ func doPagesRequest(jsonString string) *http.Response{
 func GetPages(f models.Filter, start_cursor string, s  ...models.Sort) models.GetPagesResponse{
 
   requestQuery := models.GetPagesRequest{
-		Page_Size: 10,
+		Page_Size: 100,
 	}
 	dateFilter := models.DateFilter{
 		On_or_after: f.Created_time.On_or_after,

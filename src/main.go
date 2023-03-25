@@ -58,6 +58,13 @@ func CurrentStreakRoute(w http.ResponseWriter, r *http.Request){
 	json.NewEncoder(w).Encode(res)
 }
 
+func LongestStreakRoute(w http.ResponseWriter, r *http.Request){
+	habit := mux.Vars(r)["habit"]
+	res := usecases.GetLongestStreak(habit)
+
+	json.NewEncoder(w).Encode(res)
+}
+
 
 func main(){
 
@@ -68,5 +75,6 @@ func main(){
 	r.HandleFunc("/habits/sum", SumRoute)
 	r.HandleFunc("/pages", PagesRoute)
 	r.HandleFunc("/habits/streak/current/{habit}", CurrentStreakRoute)
+	r.HandleFunc("/habits/streak/longest/{habit}", LongestStreakRoute)
 	log.Fatal(http.ListenAndServe(":3000", r))
 }
